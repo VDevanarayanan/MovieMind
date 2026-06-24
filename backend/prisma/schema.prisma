@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String               @id @default(uuid())
+  username         String               @unique
+  email            String               @unique
+  password         String
+  createdAt        DateTime             @default(now())
+  watchedMovies    WatchedMovie[]
+  ratings          MovieRating[]
+  recommendations  RecommendationCache[]
+}
+
+model WatchedMovie {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  tmdbId    Int
+  title     String
+  poster    String?
+  watchedAt DateTime @default(now())
+
+  @@unique([userId, tmdbId])
+}
+
+model MovieRating {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  tmdbId    Int
+  rating    Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tmdbId])
+}
+
+model RecommendationCache {
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+  recommendations Json
+  createdAt       DateTime @default(now())
+}
