@@ -16,14 +16,9 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.backend
-    environment:
-      DATABASE_URL: postgres://moviemind_user:moviemind_pass@db:5432/moviemind
-      JWT_SECRET: changeme
-      TMDB_API_KEY: your_tmdb_api_key
-      GEMINI_API_URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
-      GEMINI_API_KEY: your_gemini_api_key
-      PORT: 4000
+      dockerfile: ../Dockerfile.backend
+    env_file:
+      - ./backend/.env
     ports:
       - '4000:4000'
     depends_on:
@@ -32,9 +27,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.frontend
-    environment:
-      VITE_API_BASE_URL: http://localhost:4000/api
+      dockerfile: ../Dockerfile.frontend
     ports:
       - '5173:80'
     depends_on:
